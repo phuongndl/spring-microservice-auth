@@ -1,9 +1,9 @@
 spring:
   application:
-    name: 'auth'
+    name: auth
   profiles:
-    active:
-    - default
+    active: default
   cloud:
     config:
-      url: http://localhost:8888
+      name: auth
+      uri: http://localhost:8888
