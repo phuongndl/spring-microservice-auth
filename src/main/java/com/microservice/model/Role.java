@@ -2,8 +2,6 @@ package com.microservice.model;
 
 import javax.persistence.*;
 
-import com.microservice.model.ERole;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

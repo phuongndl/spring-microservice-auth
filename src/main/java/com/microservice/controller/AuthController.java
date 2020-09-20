@@ -45,6 +45,9 @@ import com.microservice.repository.RoleRepository;
 import com.microservice.repository.UserRepository;
 import com.microservice.service.UserDetailsImpl;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -68,12 +71,14 @@ public class AuthController {
 	JwtUtils jwtUtils;
 
 	@GetMapping("/user")
-	public Principal user(Principal user) {
-		return user;
+	public Principal user(Principal principal) {
+		log.info("enter user for {}", principal);
+		return principal;
 	}
 	
 	@GetMapping("/info")
 	public UserDto getUserInfo(Principal principal) {
+		log.info("enter getUserInfo for {}", principal);
 		User user = userRepository.findByUsername(principal.getName())
 				.orElseThrow(() -> new NotFoundException("User is not found"));
 		
@@ -82,7 +87,7 @@ public class AuthController {
 	
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+		log.info("enter authenticateUser for {}", loginRequest);
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -110,6 +115,7 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+		log.info("enter registerUser for {}", signUpRequest);
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()

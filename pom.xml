@@ -94,6 +94,13 @@
 			<version>2.1.5</version>
 		</dependency>
 		
+		<!-- LogStash -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>6.4</version>
+		</dependency>
+		
 		<!-- Spring Actuator -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
