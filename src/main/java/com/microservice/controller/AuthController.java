@@ -90,21 +90,22 @@ public class AuthController {
 		log.info("enter authenticateUser for {}", loginRequest);
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		User user = userRepository.findByUsername(loginRequest.getUsername())
+				.orElseThrow(() -> new NotFoundException("User is not found"));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
 		
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());	
 		
-		User user = userRepository.findByUsername(loginRequest.getUsername())
-				.orElseThrow(() -> new NotFoundException("User is not found"));
-		String[] permissions = user.getPermissions()
+		List<String> permissions = user.getPermissions()
 				.stream()
 				.map(p -> p.getName())
-				.toArray(String[]::new);
+				.collect(Collectors.toList());	
+		
+		String jwt = jwtUtils.generateJwtToken(authentication, user, roles, permissions);
 
 		return ResponseEntity.ok(new JwtResponse(jwt, 
 												 userDetails.getId(), 

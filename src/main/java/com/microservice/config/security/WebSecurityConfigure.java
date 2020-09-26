@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.microservice.config.jwt.AuthEntryPointJwt;
 import com.microservice.config.jwt.AuthTokenFilter;
+import com.microservice.config.jwt.JwtAuthenticationProvider;
 import com.microservice.service.UserDetailsServiceImpl;
 
 // Spring Security - We override methods so that the OAuth2 configuration class can override and see
@@ -29,14 +30,18 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthEntryPointJwt unauthorizedHandler;
 
+    @Autowired
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
+    
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
 	}
 
 	@Override
-	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(jwtAuthenticationProvider);
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
@@ -68,5 +73,4 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) {
 		web.ignoring().antMatchers(new String[] {"/actuator/**"});
 	}
-
 }

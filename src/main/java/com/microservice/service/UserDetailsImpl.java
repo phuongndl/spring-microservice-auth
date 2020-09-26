@@ -57,6 +57,23 @@ public class UserDetailsImpl implements UserDetails {
 				authorities);
 	}
 
+	public static UserDetailsImpl build(long userId, String username, List<String> roles, List<String> permissions) {
+		List<GrantedAuthority> authorities = roles.stream()
+				.map(role -> new SimpleGrantedAuthority(role))
+				.collect(Collectors.toList());
+		
+		permissions.stream()
+				.map(permission -> new SimpleGrantedAuthority("permission_" + permission))
+				.forEach(p -> authorities.add(p));
+
+		return new UserDetailsImpl(
+				userId, 
+				username, 
+				"",
+				"", 
+				authorities);
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
